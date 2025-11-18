@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:trivia_game/common/services/ads_service.dart';
 import 'package:trivia_game/features/game/game_controller.dart';
 import 'package:trivia_game/features/game/widgets/answer_result_widget.dart';
+import 'package:trivia_game/l10n/app_localizations.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
@@ -47,6 +48,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(gameControllerProvider);
     final controller = ref.read(gameControllerProvider.notifier);
     final currentQuestion = state.questions.isEmpty
@@ -62,7 +64,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Question ${state.currentQuestionIndex + 1}'),
+        title: Text('${l10n.question} ${state.currentQuestionIndex + 1}'),
         automaticallyImplyLeading: false,
       ),
       body: currentQuestion == null
@@ -92,7 +94,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Confidence Multiplier:',
+                  Text(l10n.confidenceMultiplier,
                       textAlign: TextAlign.center),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -113,7 +115,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     onPressed: state.selectedAnswer == null
                         ? null
                         : () => controller.submitAnswer(),
-                    child: const Text('Submit Answer'),
+                    child: Text(l10n.submitAnswer),
                   ),
                   if (state.answerResult != null)
                     AnswerResultWidget(result: state.answerResult!),

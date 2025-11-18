@@ -3,37 +3,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trivia_game/features/game/game_controller.dart';
 import 'package:trivia_game/features/results/results_controller.dart';
-import 'package.flutter/widgets.dart';
+import 'package:trivia_game/l10n/app_localizations.dart';
 
 class ResultsScreen extends ConsumerWidget {
   const ResultsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final gameState = ref.watch(gameControllerProvider);
     final resultsState = ref.watch(resultsControllerProvider);
 
-    // Calculate accuracy
-    final accuracy = (resultsState.correctAnswers /
-            (resultsState.correctAnswers + resultsState.incorrectAnswers)) *
-        100;
+    // Calculate accuracy, avoiding division by zero
+    final totalQuestions =
+        resultsState.correctAnswers + resultsState.incorrectAnswers;
+    final accuracy = totalQuestions > 0
+        ? (resultsState.correctAnswers / totalQuestions) * 100
+        : 0;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Game Over'),
+        title: Text(l10n.gameOver),
         automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Topic: ${resultsState.topicPlayed}',
+            Text('${l10n.topic}: ${resultsState.topicPlayed}',
                 style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 10),
-            Text('Total Score: ${gameState.totalScore}',
+            Text('${l10n.totalScore}: ${gameState.totalScore}',
                 style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 10),
-            Text('Accuracy: ${accuracy.toStringAsFixed(2)}%',
+            Text('${l10n.accuracy}: ${accuracy.toStringAsFixed(2)}%',
                 style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             Row(
@@ -41,11 +44,11 @@ class ResultsScreen extends ConsumerWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => context.go('/topic'),
-                  child: const Text('Play Again'),
+                  child: Text(l10n.playAgain),
                 ),
                 ElevatedButton(
                   onPressed: () => context.go('/'),
-                  child: const Text('Back to Home'),
+                  child: Text(l10n.backToHome),
                 ),
               ],
             ),
